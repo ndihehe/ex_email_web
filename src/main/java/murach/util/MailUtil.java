@@ -66,7 +66,7 @@ public class MailUtil {
         }
 
 
-        Address fromAddress = new InternetAddress(from, "Hệ Thống Web");
+        Address fromAddress = new InternetAddress(from, "ndihehe");
         Address toAddress = new InternetAddress(to);
         message.setFrom(fromAddress);
         message.setRecipient(Message.RecipientType.TO, toAddress);
@@ -75,18 +75,43 @@ public class MailUtil {
     }
 
     public static String buildWelcomeEmail(murach.model.User user) {
-        return "<div style='background-color: #0d1117; padding: 35px 15px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;'>"
-                + "  <div style='max-width: 580px; margin: 0 auto; background-color: #161b22; border-radius: 14px; border: 1px solid #30363d; overflow: hidden; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);'>"
-                + "    <div style='background-color: #0d1117; padding: 25px 20px; text-align: center; border-bottom: 2px solid #00f3ff;'>"
-                + "      <h1 style='margin: 0; font-size: 24px; font-weight: 800; color: #00f3ff; text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00b4d8; text-transform: uppercase; letter-spacing: 1.5px;'>Welcome to our email list</h1>"
+        return "<div style='background-color: #0b0e14; padding: 35px 15px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;'>"
+                + "  <style>"
+                + "    @keyframes discordRgb {"
+                + "      0% { filter: hue-rotate(0deg); }"
+                + "      100% { filter: hue-rotate(360deg); }"
+                + "    }"
+                + "    .discord-title {"
+                + "      animation: discordRgb 3s linear infinite;"
+                + "    }"
+                + "  </style>"
+                + "  <div style='max-width: 580px; margin: 0 auto; background-color: #151922; border-radius: 16px; border: 1px solid #2d3342; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);'>"
+                + "    <div style='background-color: #0b0e14; padding: 25px 20px; text-align: center; border-bottom: 2px solid #5865f2;'>"
+                + "      <div style='display: inline-block; width: 100%; max-width: 540px;'>"
+                + "        <svg width='100%' height='45' viewBox='0 0 540 45' xmlns='http://www.w3.org/2000/svg' style='display: block; margin: 0 auto;'>"
+                + "          <defs>"
+                + "            <linearGradient id='discordRainbow' x1='0%' y1='0%' x2='100%' y2='0%'>"
+                + "              <stop offset='0%' stop-color='#ff007f'><animate attributeName='stop-color' values='#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f' dur='3s' repeatCount='indefinite'/></stop>"
+                + "              <stop offset='25%' stop-color='#ff7b00'><animate attributeName='stop-color' values='#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f;#ff7b00' dur='3s' repeatCount='indefinite'/></stop>"
+                + "              <stop offset='50%' stop-color='#00f3ff'><animate attributeName='stop-color' values='#00f3ff;#7928ca;#ff007f;#ff7b00;#ffee00;#00f3ff' dur='3s' repeatCount='indefinite'/></stop>"
+                + "              <stop offset='75%' stop-color='#7928ca'><animate attributeName='stop-color' values='#7928ca;#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca' dur='3s' repeatCount='indefinite'/></stop>"
+                + "              <stop offset='100%' stop-color='#ff007f'><animate attributeName='stop-color' values='#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f' dur='3s' repeatCount='indefinite'/></stop>"
+                + "            </linearGradient>"
+                + "            <filter id='neonGlow'>"
+                + "              <feGaussianBlur stdDeviation='2.5' result='blur'/>"
+                + "              <feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge>"
+                + "            </filter>"
+                + "          </defs>"
+                + "          <text x='50%' y='32' text-anchor='middle' fill='url(#discordRainbow)' filter='url(#neonGlow)' font-family='system-ui, -apple-system, sans-serif' font-size='23' font-weight='900' letter-spacing='2px'>WELCOME TO OUR EMAIL LIST</text>"
+                + "        </svg>"
+                + "      </div>"
                 + "    </div>"
                 + "    <div style='padding: 30px; color: #e6edf3; line-height: 1.8; font-size: 15px;'>"
                 + "      <p style='margin-top: 0; font-size: 17px;'>Dear <b style='color: #00f3ff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);'>" + user.getFirstName() + "</b>,</p>"
                 + "      <p>Thanks for joining our email list. We'll make sure to send you announcements about new products and promotions.</p>"
                 + "      <p>Have a great day and thanks again!</p>"
-                + "      <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #30363d; color: #8b949e; font-size: 14px;'>"
-                + "        <p style='margin: 0; font-size: 16px; font-weight: bold; color: #00f3ff; text-shadow: 0 0 6px rgba(0, 243, 255, 0.3);'>Nhat Duy</p>"
-                + "        <p style='margin: 3px 0 0 0; color: #8b949e;'> &amp;</p>"
+                + "      <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #2d3342; color: #8b949e; font-size: 14px;'>"
+                + "        <p style='margin: 0; font-size: 16px; font-weight: bold; color: #5865f2; text-shadow: 0 0 8px rgba(88, 101, 242, 0.5);'>ndihehe</p>"
                 + "      </div>"
                 + "    </div>"
                 + "  </div>"
