@@ -1,0 +1,18 @@
+name: Keep Render Alive 24/7
+
+on:
+  schedule:
+    # Chay tu dong moi 5 phut
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Web Service
+        run: |
+          echo "Pinging Render Web..."
+          curl -s -o /dev/null -w "%{http_code}\n" https://ex-email-web.onrender.com
+          curl -s -o /dev/null -w "%{http_code}\n" https://www.ndi666.id.vn || true
+          echo "Ping completed successfully! Render will never sleep."
