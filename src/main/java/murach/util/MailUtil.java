@@ -1,6 +1,12 @@
 package murach.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -15,9 +21,95 @@ public class MailUtil {
         return System.getenv("MAIL_PASSWORD");
     }
 
+    public static String getResendApiKey() {
+        return System.getenv("RESEND_API_KEY");
+    }
+
     public static void sendMail(String to, String from,
                                 String subject, String body, 
                                 boolean bodyIsHTML) 
+            throws MessagingException, UnsupportedEncodingException {
+
+        // 1. Uu tien gui qua Resend REST API (Cong 443 HTTPS - Hoat dong 100% tren Render khong bi chan cong)
+        String resendKey = getResendApiKey();
+        if (resendKey != null && !resendKey.trim().isEmpty()) {
+            try {
+                boolean sent = sendViaResend(to, subject, body, resendKey);
+                if (sent) {
+                    System.out.println("Email sent successfully via Resend HTTPS API to: " + to);
+                    return;
+                }
+            } catch (Exception e) {
+                System.err.println("Resend API failed, falling back to SMTP: " + e.getMessage());
+            }
+        }
+
+        // 2. Du phong: Gui qua Gmail SMTP truyen thong (cho localhost hoac server khong chan port 465)
+        sendViaSmtp(to, from, subject, body, bodyIsHTML);
+    }
+
+    private static boolean sendViaResend(String to, String subject, String body, String apiKey) throws Exception {
+        String fromSender = System.getenv("RESEND_FROM");
+        if (fromSender == null || fromSender.trim().isEmpty()) {
+            fromSender = "onboarding@resend.dev";
+        }
+
+        String json = "{"
+            + "\"from\":\"ndihehe <" + fromSender + ">\","
+            + "\"to\":[\"" + escapeJson(to) + "\"],"
+            + "\"subject\":\"" + escapeJson(subject) + "\","
+            + "\"html\":\"" + escapeJson(body) + "\""
+            + "}";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.resend.com/emails"))
+                .header("Authorization", "Bearer " + apiKey)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
+                .timeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() >= 200 && response.statusCode() < 300) {
+            return true;
+        } else {
+            System.err.println("Resend API error (" + response.statusCode() + "): " + response.body());
+            throw new RuntimeException("Resend API error: " + response.body());
+        }
+    }
+
+    private static String escapeJson(String str) {
+        if (str == null) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            switch (c) {
+                case '"': sb.append("\\\""); break;
+                case '\\': sb.append("\\\\"); break;
+                case '\b': sb.append("\\b"); break;
+                case '\f': sb.append("\\f"); break;
+                case '\n': sb.append("\\n"); break;
+                case '\r': sb.append("\\r"); break;
+                case '\t': sb.append("\\t"); break;
+                default:
+                    if (c < ' ') {
+                        String t = "000" + Integer.toHexString(c);
+                        sb.append("\\u").append(t.substring(t.length() - 4));
+                    } else {
+                        sb.append(c);
+                    }
+            }
+        }
+        return sb.toString();
+    }
+
+    private static void sendViaSmtp(String to, String from,
+                                   String subject, String body, 
+                                   boolean bodyIsHTML) 
             throws MessagingException, UnsupportedEncodingException {
 
         final String username = getSenderEmail();
@@ -27,7 +119,7 @@ public class MailUtil {
             throw new MessagingException("Chưa cấu hình biến môi trường MAIL_USERNAME hoặc MAIL_PASSWORD trên máy chủ!");
         }
 
-        // Ép Java luôn sử dụng IPv4 để kết nối Gmail (tránh timeout do mạng không định tuyến được IPv6)
+        // Ep Java luon su dung IPv4 de ket noi Gmail
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("java.net.preferIPv6Addresses", "false");
 
@@ -51,10 +143,8 @@ public class MailUtil {
                 return new PasswordAuthentication(username, password);
             }
         });
-        
 
         session.setDebug(true);
-
 
         Message message = new MimeMessage(session);
         message.setSubject(subject);
@@ -64,7 +154,6 @@ public class MailUtil {
         } else {
             message.setText(body);
         }
-
 
         Address fromAddress = new InternetAddress(from, "ndihehe");
         Address toAddress = new InternetAddress(to);
