@@ -27,15 +27,21 @@ public class MailUtil {
             throw new MessagingException("Chưa cấu hình biến môi trường MAIL_USERNAME hoặc MAIL_PASSWORD trên máy chủ!");
         }
 
+        // Ép Java luôn sử dụng IPv4 để kết nối Gmail (tránh timeout do mạng không định tuyến được IPv6)
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        System.setProperty("java.net.preferIPv6Addresses", "false");
+
         Properties props = new Properties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "465");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
         props.put("mail.smtp.ssl.trust", "*");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
         props.put("mail.smtp.connectiontimeout", "10000");
         props.put("mail.smtp.timeout", "10000");
 
