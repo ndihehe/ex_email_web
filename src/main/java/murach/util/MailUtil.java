@@ -74,48 +74,18 @@ public class MailUtil {
         Transport.send(message);
     }
 
-    private static String buildRainbowTitle(String text) {
-        String[] colors = {
-            "#ff0055", "#ff5500", "#ffaa00", "#ffee00", 
-            "#00ff66", "#00f3ff", "#0088ff", "#7928ca", 
-            "#b800ff", "#ff007f"
-        };
-        StringBuilder sb = new StringBuilder();
-        int colorIdx = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (c == ' ') {
-                sb.append("<span style='display:inline-block; width:10px;'>&nbsp;</span>");
-            } else {
-                String color = colors[colorIdx % colors.length];
-                colorIdx++;
-                sb.append("<span style='color: ").append(color)
-                  .append("; text-shadow: 0 0 10px ").append(color)
-                  .append(", 0 0 20px ").append(color)
-                  .append("; font-weight: 900;'>")
-                  .append(c)
-                  .append("</span>");
-            }
-        }
-        return sb.toString();
-    }
-
     public static String buildWelcomeEmail(murach.model.User user) {
-        String rainbowTitle = buildRainbowTitle("WELCOME TO OUR EMAIL LIST");
-
         return "<div style='background-color: #0b0e14; padding: 35px 15px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;'>"
                 + "  <div style='max-width: 580px; margin: 0 auto; background-color: #151922; border-radius: 16px; border: 1px solid #2d3342; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);'>"
-                + "    <div style='background-color: #0b0e14; padding: 25px 20px; text-align: center; border-bottom: 2px solid #5865f2;'>"
-                + "      <h1 style='margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;'>"
-                +          rainbowTitle
-                + "      </h1>"
+                + "    <div style='background-color: #0b0e14; padding: 25px 20px; text-align: center; border-bottom: 2px solid #00f3ff;'>"
+                + "      <h1 style='margin: 0; font-size: 24px; font-weight: 800; color: #00f3ff; text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px rgba(0, 243, 255, 0.5); text-transform: uppercase; letter-spacing: 1.5px;'>Welcome to our email list</h1>"
                 + "    </div>"
                 + "    <div style='padding: 30px; color: #e6edf3; line-height: 1.8; font-size: 15px;'>"
                 + "      <p style='margin-top: 0; font-size: 17px;'>Dear <b style='color: #00f3ff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);'>" + user.getFirstName() + "</b>,</p>"
                 + "      <p>Thanks for joining our email list. We'll make sure to send you announcements about new products and promotions.</p>"
                 + "      <p>Have a great day and thanks again!</p>"
                 + "      <div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #2d3342; color: #8b949e; font-size: 14px;'>"
-                + "        <p style='margin: 0; font-size: 16px; font-weight: bold; color: #5865f2; text-shadow: 0 0 8px rgba(88, 101, 242, 0.5);'>ndihehe</p>"
+                + "        <p style='margin: 0; font-size: 16px; font-weight: bold; color: #00f3ff; text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);'>ndihehe</p>"
                 + "      </div>"
                 + "    </div>"
                 + "  </div>"
