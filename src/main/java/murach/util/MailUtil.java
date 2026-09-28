@@ -74,37 +74,41 @@ public class MailUtil {
         Transport.send(message);
     }
 
+    private static String buildRainbowTitle(String text) {
+        String[] colors = {
+            "#ff0055", "#ff5500", "#ffaa00", "#ffee00", 
+            "#00ff66", "#00f3ff", "#0088ff", "#7928ca", 
+            "#b800ff", "#ff007f"
+        };
+        StringBuilder sb = new StringBuilder();
+        int colorIdx = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == ' ') {
+                sb.append("<span style='display:inline-block; width:10px;'>&nbsp;</span>");
+            } else {
+                String color = colors[colorIdx % colors.length];
+                colorIdx++;
+                sb.append("<span style='color: ").append(color)
+                  .append("; text-shadow: 0 0 10px ").append(color)
+                  .append(", 0 0 20px ").append(color)
+                  .append("; font-weight: 900;'>")
+                  .append(c)
+                  .append("</span>");
+            }
+        }
+        return sb.toString();
+    }
+
     public static String buildWelcomeEmail(murach.model.User user) {
+        String rainbowTitle = buildRainbowTitle("WELCOME TO OUR EMAIL LIST");
+
         return "<div style='background-color: #0b0e14; padding: 35px 15px; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;'>"
-                + "  <style>"
-                + "    @keyframes discordRgb {"
-                + "      0% { filter: hue-rotate(0deg); }"
-                + "      100% { filter: hue-rotate(360deg); }"
-                + "    }"
-                + "    .discord-title {"
-                + "      animation: discordRgb 3s linear infinite;"
-                + "    }"
-                + "  </style>"
                 + "  <div style='max-width: 580px; margin: 0 auto; background-color: #151922; border-radius: 16px; border: 1px solid #2d3342; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);'>"
                 + "    <div style='background-color: #0b0e14; padding: 25px 20px; text-align: center; border-bottom: 2px solid #5865f2;'>"
-                + "      <div style='display: inline-block; width: 100%; max-width: 540px;'>"
-                + "        <svg width='100%' height='45' viewBox='0 0 540 45' xmlns='http://www.w3.org/2000/svg' style='display: block; margin: 0 auto;'>"
-                + "          <defs>"
-                + "            <linearGradient id='discordRainbow' x1='0%' y1='0%' x2='100%' y2='0%'>"
-                + "              <stop offset='0%' stop-color='#ff007f'><animate attributeName='stop-color' values='#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f' dur='3s' repeatCount='indefinite'/></stop>"
-                + "              <stop offset='25%' stop-color='#ff7b00'><animate attributeName='stop-color' values='#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f;#ff7b00' dur='3s' repeatCount='indefinite'/></stop>"
-                + "              <stop offset='50%' stop-color='#00f3ff'><animate attributeName='stop-color' values='#00f3ff;#7928ca;#ff007f;#ff7b00;#ffee00;#00f3ff' dur='3s' repeatCount='indefinite'/></stop>"
-                + "              <stop offset='75%' stop-color='#7928ca'><animate attributeName='stop-color' values='#7928ca;#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca' dur='3s' repeatCount='indefinite'/></stop>"
-                + "              <stop offset='100%' stop-color='#ff007f'><animate attributeName='stop-color' values='#ff007f;#ff7b00;#ffee00;#00f3ff;#7928ca;#ff007f' dur='3s' repeatCount='indefinite'/></stop>"
-                + "            </linearGradient>"
-                + "            <filter id='neonGlow'>"
-                + "              <feGaussianBlur stdDeviation='2.5' result='blur'/>"
-                + "              <feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge>"
-                + "            </filter>"
-                + "          </defs>"
-                + "          <text x='50%' y='32' text-anchor='middle' fill='url(#discordRainbow)' filter='url(#neonGlow)' font-family='system-ui, -apple-system, sans-serif' font-size='23' font-weight='900' letter-spacing='2px'>WELCOME TO OUR EMAIL LIST</text>"
-                + "        </svg>"
-                + "      </div>"
+                + "      <h1 style='margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;'>"
+                +          rainbowTitle
+                + "      </h1>"
                 + "    </div>"
                 + "    <div style='padding: 30px; color: #e6edf3; line-height: 1.8; font-size: 15px;'>"
                 + "      <p style='margin-top: 0; font-size: 17px;'>Dear <b style='color: #00f3ff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);'>" + user.getFirstName() + "</b>,</p>"
