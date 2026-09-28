@@ -1,19 +1,31 @@
-package murach.business;
+package murach.model;
 
-public class User {
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "Users")
+public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserID")
+    private int id;
+    private String Email;
     private String firstName;
     private String lastName;
-    private String email;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email) {
+    public User(String firstName, String lastName, String Email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.Email = Email;
     }
 
+    public  int getId() {return id;}
+    public void setId(int id) {this.id = id;}
     public String getFirstName() {
         return firstName;
     }
@@ -31,15 +43,11 @@ public class User {
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.Email = email;
     }
 
-    @Override
-    public String toString() {
-        return firstName + " " + lastName + " <" + email + ">";
-    }
 }
